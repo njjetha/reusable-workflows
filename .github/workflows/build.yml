@@ -1,0 +1,19 @@
+on:
+  workflow_call:
+    secrets:
+      SEMGREP_APP_TOKEN:
+        required: true
+
+jobs:
+  Semgrep:
+    if: ${{ ( contains('pull_request', github.event_name) && github.event.action != 'closed' ) }}
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Run Semgrep
+        uses: njjetha/semgrep-action@master
+        with:
+          token: ${{ secrets.SEMGREP_APP_TOKEN }}
